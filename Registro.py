@@ -14,6 +14,6 @@ class Registro():
 
     def registrar(self):
         string_insert = "INSERT INTO Jugador(nombre, password) VALUES ('" + self.nombre + "','" + self.password + "')"
-        print(string_insert)
+        #print(string_insert)
         self.cursor.execute(string_insert)
         self.connection.commit()
