@@ -81,7 +81,7 @@ class Main():
 
     def cargas(self):
         self.__jugador1 = self.acceder()
-        string_carga = "SELECT * FROM Partida WHERE fk_id_creador = " + str(self.__jugador1.identificador) + " AND resultado = 'empate' AND tablero_cifrado LIKE '%B%'"
+        string_carga = "SELECT * FROM Partida WHERE fk_id_creador = " + str(self.__jugador1.identificador) + " AND resultado IS NULL"
         self.cursor.execute(string_carga)
         lista = self.cursor.fetchall()
         #imprime = ""
@@ -156,36 +156,52 @@ class Main():
 
     def estadisticas(self):
         self.__jugador1 = self.acceder()
-        string_carga = "SELECT * FROM Partida WHERE fk_id_creador = " + str(self.__jugador1.identificador) + " OR fk_id_oponente = " + str(self.__jugador1.identificador)
+        string_carga = "SELECT * FROM Partida WHERE fk_id_creador = " + str(self.__jugador1.identificador)
         self.cursor.execute(string_carga)
-        lista = self.cursor.fetchall()
+        lista_creador = self.cursor.fetchall()
+        string_carga0 = "SELECT * FROM Partida WHERE fk_id_oponente = " + str(self.__jugador1.identificador)
+        self.cursor.execute(string_carga0)
+        lista_oponente = self.cursor.fetchall()
         #imprime = ""
-        if lista == []:
+        if lista_creador == [] and lista_oponente == []:
             print("Ups, parece que no tienes partidas terminadas con este usuario")
         else:
-            gana = []
-            pierde = []
+            gana_crea = []
+            pierde_crea = []
             empate = []
-            for list in lista:
-                if list[5] == "gana":
-                    gana.append(list)
-                elif list[5] == "pierde":
-                    pierde.append(list)
-                elif "B" in list[1]:
-                    empate.append(list)
-            new_list = [gana, pierde, empate]
+            gana_opo = []
+            pierde_opo = []
+            if lista_creador != []:
+                for list in lista_creador:
+                    if list[5] == "gana":
+                        gana_crea.append(list)
+                    elif list[5] == "pierde":
+                        pierde_crea.append(list)
+                    elif list[5] == "empate":
+                        empate.append(list)
+                    #new_list = [gana, pierde, empate]
+            if lista_oponente != []:
+                for list in lista_oponente:
+                    if list[5] == "pierde":
+                        gana_opo.append(list)
+                    elif list[5] == "gana":
+                        pierde_opo.append(list)
+                    elif list[5] == "empate":
+                        empate.append(list)
+            gana = gana_opo + gana_crea
+            pierde = pierde_opo + pierde_crea
             if gana != []:
-                print("Partidas ganadas")
+                print(Fore.GREEN + "Partidas ganadas" + Fore.RESET)
                 for k in gana:
                     jugador = self.obtenerJugadorpk(k[4])
                     print("Ganaste contra " + jugador.getNombre())
             if pierde != []:
-                print("Partidas perdidas")
+                print(Fore.RED + "Partidas perdidas" + Fore.RESET)
                 for k in pierde:
                     jugador = self.obtenerJugadorpk(k[4])
                     print("Perdiste contra " + jugador.getNombre())
             if empate != []:
-                print("Partidas empatadas")
+                print(Fore.YELLOW + "Partidas empatadas" + Fore.RESET)
                 for k in empate:
                     jugador = self.obtenerJugadorpk(k[4])
                     print("Empataste contra " + jugador.getNombre())

@@ -21,9 +21,6 @@ class Juego():
         self.cursor = cursor
         self.connection = connection
 
-    def guardaroupdate(self):
-        pass
-
     def guardar(self):
         string_guardar = "INSERT INTO Partida( tablero_cifrado, fk_id_jugador_en_turno, fk_id_creador, fk_id_oponente, resultado) VALUES (" + self.__cifradoTablero() + self.__getEnturno() + self.__getCreador() + self.__getOponente() + self.__getResultado() + ")"
         self.cursor.execute(string_guardar)
@@ -57,14 +54,19 @@ class Juego():
 
     def __getResultado(self):
         #El resultado es en referencia a quien creo el juego
-        if self.empate()==True and self.__revisarEmpate()==True:
+        if self.__revisarEmpate()==True:
             return "'empate'"
+
+        #if self.empate() == True:
+        #    return "NULL"
+
         for i in range(0,7):
             for j in range(0,6):
                 if self.__verMovimiento(i,j,self.__creador.getColor()) == True:
                     return "'gana'"
                 elif self.__verMovimiento(i,j,self.__Jugador2.getColor())  == True:
                     return "'pierde'"
+        return "NULL"
 
     def empate(self):
         for i in range(0,7):
