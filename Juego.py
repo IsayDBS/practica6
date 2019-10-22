@@ -208,13 +208,6 @@ class Juego():
             if self.__tablero[fila][columna]==color and self.__tablero[fila-1][columna]==color and self.__tablero[fila-2][columna]==color and self.__tablero[fila-3][columna]==color:
                 return True
 
-        if columna-3 >= 0:
-            if self.__tablero[fila][columna-1]==color and self.__tablero[fila][columna-2]==color and self.__tablero[fila][columna-3]==color and self.__tablero[fila][columna]==color:
-                return True
-
-        if columna+3 < 6:
-            if self.__tablero[fila][columna+1]==color and self.__tablero[fila][columna+2]==color and self.__tablero[fila][columna+3]==color and self.__tablero[fila][columna]==color:
-                return True
                 #print("Si se cumplio")
         for r in range(0,4):#revisa diagonalmente con combinados
             if fila+r-3 >= 0 and fila+r >= 0 and fila+r < 7 and columna-r+3 >= 0 and columna+r+3 >= 0 and columna+r+3 < 6:#esto pregunta si existen las 4 diagonales
@@ -224,6 +217,10 @@ class Juego():
             #revisa diagonalmente positivos
             if fila+r-3 >= 0 and fila+r >= 0 and fila+r < 7 and columna+r-3 >= 0 and columna+r >= 0 and columna+r < 6:
                 if self.__tablero[fila+r-3][columna+r-3]==color and self.__tablero[fila+r-2][columna+r-2]==color and self.__tablero[fila+r-1][columna+r-1]==color and self.__tablero[fila+r][columna+r]==color:
+                    return True
+
+            if columna+r-3 >= 0 and columna+r < 6:
+                if self.__tablero[fila][columna+r-3] == color and self.__tablero[fila][columna+r-2]==color and self.__tablero[fila][columna+r-1] == color and self.__tablero[fila][columna+r]== color:
                     return True
                     #print("Si se cumplio")
         return False

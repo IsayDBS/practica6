@@ -81,7 +81,7 @@ class Main():
 
     def cargas(self):
         self.__jugador1 = self.acceder()
-        string_carga = "SELECT * FROM Partida WHERE fk_id_creador = " + str(self.__jugador1.identificador) + " AND resultado = 'empate' AND tablero_cifrado LIKE '%B%' "
+        string_carga = "SELECT * FROM Partida WHERE fk_id_creador = " + str(self.__jugador1.identificador) + " AND resultado = 'empate' AND tablero_cifrado LIKE '%B%'"
         self.cursor.execute(string_carga)
         lista = self.cursor.fetchall()
         #imprime = ""
@@ -171,7 +171,7 @@ class Main():
                     gana.append(list)
                 elif list[5] == "pierde":
                     pierde.append(list)
-                elif "B" not in list[1]:
+                elif "B" in list[1]:
                     empate.append(list)
             new_list = [gana, pierde, empate]
             if gana != []:
