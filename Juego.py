@@ -57,9 +57,7 @@ class Juego():
 
     def __getResultado(self):
         #El resultado es en referencia a quien creo el juego
-        if self.__revisarEmpate() == True:
-            return "'empate'"
-        if self.empate()==True:
+        if self.empate()==True and self.__revisarEmpate()==True:
             return "'empate'"
         for i in range(0,7):
             for j in range(0,6):
