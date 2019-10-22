@@ -57,13 +57,23 @@ class Juego():
 
     def __getResultado(self):
         #El resultado es en referencia a quien creo el juego
+        if self.__revisarEmpate() == True:
+            return "'empate'"
+        if self.empate()==True:
+            return "'empate'"
         for i in range(0,7):
             for j in range(0,6):
                 if self.__verMovimiento(i,j,self.__creador.getColor()) == True:
                     return "'gana'"
                 elif self.__verMovimiento(i,j,self.__Jugador2.getColor())  == True:
                     return "'pierde'"
-        return "'empate'"
+
+    def empate(self):
+        for i in range(0,7):
+            for j in range(0,6):
+                if self.__tablero[i][j]==Fore.BLACK:
+                    return True
+        return False
 
     def __setTablero(self, cifrado):
         #cifrado es un string, agregamos desde 0 hasta 41
@@ -137,9 +147,9 @@ class Juego():
                 if self.__tablero[i][j]== Fore.BLACK:
                     contador += 1
         if contador == 0:
-            return True
+            return True#Si hay empate
         else:
-            return False
+            return False#NO lo hay
 
     def jugar(self):
         contador = 0
