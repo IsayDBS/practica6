@@ -26,7 +26,6 @@ class Juego():
 
     def guardar(self):
         string_guardar = "INSERT INTO Partida( tablero_cifrado, fk_id_jugador_en_turno, fk_id_creador, fk_id_oponente, resultado) VALUES (" + self.__cifradoTablero() + self.__getEnturno() + self.__getCreador() + self.__getOponente() + self.__getResultado() + ")"
-        #print(string_guardar)
         self.cursor.execute(string_guardar)
         self.connection.commit()
 
@@ -36,15 +35,18 @@ class Juego():
         self.connection.commit()
 
     def __revisa(self):
-        string_revisa = "SELECT * FROM Partida WHERE pk_id_partida = " + self.__getPKPartida()
-        self.cursor.execute(string_revisa)
-        return self.cursor.fetchall()
+        if self.__getPKPartida() ==[]:
+            return []
+        else:
+            string_revisa = "SELECT * FROM Partida WHERE pk_id_partida = " + self.__getPKPartida()[0][0]
+            self.cursor.execute(string_revisa)
+            return self.cursor.fetchall()
 
-    #def __getPKPartida(self):
-    #    string_select = "SELECT pk_id_partida FROM Partida WHERE "
-    #    self.cursor.execute(string_select)
-    #    lista = self.cursor.fetchall()
-    #    return lista[0][0]
+    def __getPKPartida(self):
+        string_select = "SELECT pk_id_partida FROM Partida WHERE " + str(self.identificador)
+        self.cursor.execute(string_select)
+        lista = self.cursor.fetchall()
+        return lista
 
     def __turnoInicio(self):
         numero = random.randint(1,101)
@@ -55,15 +57,13 @@ class Juego():
 
     def __getResultado(self):
         #El resultado es en referencia a quien creo el juego
-        if self.__revisarEmpate() == False:
-            return "'empate'"
-        else:
-            for i in range(0,7):
-                for j in range(0,6):
-                    if self.__verMovimiento(i,j,self.__creador.getColor()) == True:
-                        return "'gana'"
-                    elif self.__verMovimiento(i,j,self.__Jugador2.getColor())  == True:
-                        return "'pierde'"
+        for i in range(0,7):
+            for j in range(0,6):
+                if self.__verMovimiento(i,j,self.__creador.getColor()) == True:
+                    return "'gana'"
+                elif self.__verMovimiento(i,j,self.__Jugador2.getColor())  == True:
+                    return "'pierde'"
+        return "'empate'"
 
     def __setTablero(self, cifrado):
         #cifrado es un string, agregamos desde 0 hasta 41
@@ -142,24 +142,27 @@ class Juego():
             return False
 
     def jugar(self):
+        contador = 0
         ultimo = False
         while ultimo ==False:
             self.imprimir()
-            eleccion = input("Agrega en la columna que tu quieras")
+            eleccion = input("Agrega en la columna que tu quieras\nPresiona 1 para guardar la partida\n")
             ultimo,repeticion = self.agregar(eleccion, self.__jugador_en_turno)
             if repeticion == True:
                 self.__cambiodeJugador()
+                contador += 1
+            if contador == 42:
+                ultimo = True
+            #ultimo = self.__revisarEmpate()
         self.imprimir()
         self.__cambiodeJugador()
-        seleccion = input("Partida terminada, deseas guardar?(y/n)").lower()
+        seleccion = input("Partida terminada, deseas guardar?(y/no= aprieta cualquier otra tecla)\n").lower()
         if seleccion == "y":
-            if self.__revisa() == []:
-                self.guardar()
-            else:
-                self.update()
-        elif seleccion == "n":
-            pass
-        print("Ganador " + self.__jugador_en_turno.getNombre())
+            self.guardar()
+        if self.__revisarEmpate() == True:
+            print("No hubo ganadores")
+        else:
+            print("Ganador " + self.__jugador_en_turno.getNombre())
 
 
     def agregar(self,argument, jugador):
@@ -188,10 +191,12 @@ class Juego():
             print("Opcion de guardado")
             self.guardar()
             repeticion = False
-            linea, columna = 0,0
+            linea, columna = -1,-1
             print("Partida guardada")
         else:
             "Opcion no valida, ingresa una nueva"
+            linea, columna = -1,-1
+            repeticion = False
         if self.__verMovimiento(linea, columna, jugador.getColor()) == True and arg != "1":
             #print("Ganaste")
             return True, True
@@ -201,6 +206,14 @@ class Juego():
     def __verMovimiento(self, fila, columna,color):
         if fila-3 >= 0:#revisamos
             if self.__tablero[fila][columna]==color and self.__tablero[fila-1][columna]==color and self.__tablero[fila-2][columna]==color and self.__tablero[fila-3][columna]==color:
+                return True
+
+        if columna-3 >= 0:
+            if self.__tablero[fila][columna-1]==color and self.__tablero[fila][columna-2]==color and self.__tablero[fila][columna-3]==color and self.__tablero[fila][columna]==color:
+                return True
+
+        if columna+3 < 6:
+            if self.__tablero[fila][columna+1]==color and self.__tablero[fila][columna+2]==color and self.__tablero[fila][columna+3]==color and self.__tablero[fila][columna]==color:
                 return True
                 #print("Si se cumplio")
         for r in range(0,4):#revisa diagonalmente con combinados
@@ -222,7 +235,7 @@ class Juego():
                 self.__tablero[row][columna] = color
                 return True, row
         print("Columna llena, ingresa en otra")
-        time.sleep(3)
+        time.sleep(1)
         return False, 0#regresa esto, significa que no se pudo agregar porque la columna ya esta llena
 
     def imprimir(self):
@@ -269,11 +282,3 @@ class Juego():
         self.__tablero[0][4] + "O" + b + "+++++++++++++++" + r + self.__tablero[0][5] + "O" + b + "++++++++++++++++")
         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"+r)
-
-
-if __name__ == '__main__':
-    J1 = Jugador("Hola", "Hola", "Isay", Fore.RED)
-    J2 = Jugador("Hola", "Hola", "Juan", Fore.YELLOW)
-    clase = Juego(J1, J2, "", "hola","hola")
-    clase.jugar()
-    #print(clase.cifradoTablero())
