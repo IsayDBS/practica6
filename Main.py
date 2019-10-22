@@ -163,6 +163,8 @@ class Main():
         self.cursor.execute(string_carga0)
         lista_oponente = self.cursor.fetchall()
         #imprime = ""
+        #print(lista_creador)
+        #print(lista_oponente)
         if lista_creador == [] and lista_oponente == []:
             print("Ups, parece que no tienes partidas terminadas con este usuario")
         else:
@@ -186,20 +188,28 @@ class Main():
                         gana_opo.append(list)
                     elif list[5] == "gana":
                         pierde_opo.append(list)
-                    elif list[5] == "empate":
-                        empate.append(list)
             gana = gana_opo + gana_crea
             pierde = pierde_opo + pierde_crea
             if gana != []:
                 print(Fore.GREEN + "Partidas ganadas" + Fore.RESET)
                 for k in gana:
-                    jugador = self.obtenerJugadorpk(k[4])
-                    print("Ganaste contra " + jugador.getNombre())
+                    if self.__jugador1.identificador == k[4]:#el usuario es el oponente
+                        jugador = self.obtenerJugadorpk(k[3])
+                        print("Ganaste contra "+jugador.getNombre())
+                    else:#el usuario es el creador
+                        jugador = self.obtenerJugadorpk(k[4])
+                        print("Ganaste contra " + jugador.getNombre())
+                    #jugador = self.obtenerJugadorpk(k[4])
+                    #print("Ganaste contra " + jugador.getNombre())
             if pierde != []:
                 print(Fore.RED + "Partidas perdidas" + Fore.RESET)
                 for k in pierde:
-                    jugador = self.obtenerJugadorpk(k[4])
-                    print("Perdiste contra " + jugador.getNombre())
+                    if self.__jugador1.identificador == k[4]:#el usuario es el oponente
+                        jugador = self.obtenerJugadorpk(k[3])
+                        print("Perdiste contra "+jugador.getNombre())
+                    else:#el usuario es el creador
+                        jugador = self.obtenerJugadorpk(k[4])
+                        print("Perdiste contra " + jugador.getNombre())
             if empate != []:
                 print(Fore.YELLOW + "Partidas empatadas" + Fore.RESET)
                 for k in empate:
