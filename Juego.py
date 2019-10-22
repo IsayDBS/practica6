@@ -199,6 +199,7 @@ class Juego():
             columna = 5
         elif arg == '1':
             print("Opcion de guardado")
+            self.__cambiodeJugador()
             self.guardar()
             repeticion = False
             linea, columna = -1,-1
