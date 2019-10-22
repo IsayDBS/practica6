@@ -201,6 +201,7 @@ class Juego():
             print("Opcion de guardado")
             self.__cambiodeJugador()
             self.guardar()
+            self.__cambiodeJugador()
             repeticion = False
             linea, columna = -1,-1
             print("Partida guardada")
