@@ -10,5 +10,6 @@
 <p>En la opcion cargar partida, pide primero usuario y carga exclusivamente los juegos que no han acabado donde el usuario es el que creo el juego</p>
 <p>En la opcion estadisticas carga en pantalla todas las partidas jugadas ya terminadas del usuario en cuestion, sea que el las creo o era el oponente</p>
 <p>La opcion registrar es autoexplicatoria</p>
+<p>Al terminar cada partida, la partida se guarda y es tomada en cuenta para estadisticas de ambos jugadores</p>
 <p>El programa es robusto en cuestion de registrar, el menu principal y a la hora de agregar las fichas en el juego</p>
 <p>Al agregar a las columnas, lo puedes hacer con mayusculas o minusculas</p>

@@ -64,7 +64,7 @@ class Main():
                 self.connection.commit()
                 #print(fetch)
                 if fetch == []:
-                    valor = input("El usuario no existe, estas registrado(n)? Si se equivoco en contrasenia o usuario, ingrese lo que sea e intente de nuevo\n")
+                    valor = input("El usuario no existe, estas registrado(n)? Si se equivoco en contrasenia o usuario, ingrese lo que sea e intente de nuevo\n").lower()
                     if valor == "n":
                         self.registrar()
                 else:
@@ -94,31 +94,45 @@ class Main():
                 numeros.append(list[0])
             repite = True
             while repite == True:
-                seleccion = int(input("Selecciona el numero de la partida que desees cargar(el que esta mas a la izquierda)\nIntroduce -1 para salir\n"))
-                if seleccion == -1:
-                    repite = False
-                    return []
-                elif seleccion in numeros:
-                    string_cargarPartida = "SELECT * FROM Partida WHERE pk_id_partida = "+ str(seleccion)
-                    self.cursor.execute(string_cargarPartida)
-                    cargar = self.cursor.fetchall()
-                    repite = False
-                    return cargar
-                else:
-                    print("No es una partida valida, intenta de nuevo")
+                try:
+                    seleccion = int(input("Selecciona el numero de la partida que desees cargar(el que esta mas a la izquierda)\nIntroduce -1 para salir\n"))
+                    if seleccion == -1:
+                        repite = False
+                        return []
+                    elif seleccion in numeros:
+                        string_cargarPartida = "SELECT * FROM Partida WHERE pk_id_partida = "+ str(seleccion)
+                        self.cursor.execute(string_cargarPartida)
+                        cargar = self.cursor.fetchall()
+                        repite = False
+                        return cargar
+                    else:
+                        print("No es una partida valida, intenta de nuevo")
+                except:
+                    print("No es opcion valida")
         return []
 
     def switch(self, argument):
         if argument == 1:
+            print("Elegiste iniciar una nueva partida")
             self.__jugador1 = self.acceder()
             self.__jugador1.setColor(Fore.RED)
+            repite = True
             #Color del jugador que crea la partida es rojo, el del oponente es amarillo
             #print(self.__jugador1.identificador)
-            eleccion = int(input("Elige contra quien vas a jugar\n1)Otro jugador registrado\n2)Invitado\n"))
-            if eleccion==1:
-                self.__jugador2 = self.acceder()
-            else:
-                self.__jugador2 = self.acceder("invitado")
+            while repite == True:
+                try:
+                    eleccion = int(input("Elige contra quien vas a jugar\n1)Otro jugador registrado\n2)Invitado\n"))
+                    if eleccion==1:
+                        self.__jugador2 = self.acceder()
+                        repite=False
+                    elif eleccion == 2:
+                        self.__jugador2 = self.acceder("invitado")
+                        repite= False
+                    else:
+                        pass
+                except:
+                    #print(e)
+                    print("Entrada no valida")
             self.__jugador2.setColor(Fore.YELLOW)
             juego = Juego(self.__jugador1,self.__jugador2,"",self.cursor,self.connection)
             juego.jugar()
@@ -215,8 +229,8 @@ class Main():
                 for k in empate:
                     jugador = self.obtenerJugadorpk(k[4])
                     print("Empataste contra " + jugador.getNombre())
-            if new_list == [[],[],[]]:
-                print("Ups, parece que aun no has acabado ninguna partida!")
+            #if new_list == [[],[],[]]:
+            #    print("Ups, parece que aun no has acabado ninguna partida!")
 
 
     def obtenerJugadorpk(self,pk_jugador):
@@ -241,7 +255,8 @@ class Main():
                 self.switch(argumento)
                 if argumento == 0:
                     prueba = True
-            except:
+            except Exception as e:
+                #print(e)
                 print("No es entrada valida, intenta de nuevo")
         #except:
         #    print("No es un argumento valido, intenta de nuevo ")

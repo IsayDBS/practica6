@@ -166,9 +166,9 @@ class Juego():
             #ultimo = self.__revisarEmpate()
         self.imprimir()
         self.__cambiodeJugador()
-        seleccion = input("Partida terminada, deseas guardar?(y/no= aprieta cualquier otra tecla)\n").lower()
-        if seleccion == "y":
-            self.guardar()
+        #seleccion = input("Partida terminada, deseas guardar?(y/no= aprieta cualquier otra tecla)\n").lower()
+        #if seleccion == "y":
+        self.guardar()
         if self.__revisarEmpate() == True:
             print("No hubo ganadores")
         else:
@@ -199,12 +199,14 @@ class Juego():
             columna = 5
         elif arg == '1':
             print("Opcion de guardado")
+            time.sleep(2)
             self.__cambiodeJugador()
             self.guardar()
             self.__cambiodeJugador()
             repeticion = False
             linea, columna = -1,-1
             print("Partida guardada")
+            time.sleep(2)
         else:
             "Opcion no valida, ingresa una nueva"
             linea, columna = -1,-1
